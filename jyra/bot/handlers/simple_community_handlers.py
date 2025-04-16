@@ -2,8 +2,8 @@
 Simplified community engagement handlers for Jyra Telegram bot.
 """
 
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ContextTypes, CommandHandler, CallbackQueryHandler
+from telegram import Update
+from telegram.ext import ContextTypes, CommandHandler
 
 from jyra.community.feedback import Feedback
 from jyra.community.feature_requests import FeatureRequest
@@ -298,81 +298,42 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         # Store the description
         context.user_data["support_description"] = message_text
 
-        # Create keyboard with priority options
-        keyboard = [
-            [InlineKeyboardButton("🟢 Low", callback_data="priority_low")],
-            [InlineKeyboardButton(
-                "🟡 Medium", callback_data="priority_medium")],
-            [InlineKeyboardButton("🟠 High", callback_data="priority_high")],
-            [InlineKeyboardButton("🔴 Urgent", callback_data="priority_urgent")]
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
+        # Get the stored subject
+        subject = context.user_data.get("support_subject", "Support Request")
+        description = message_text
 
-        await update.message.reply_text(
-            "Thank you for the description. Please select the priority level for your ticket:",
-            reply_markup=reply_markup
-        )
+        # Create the support ticket with medium priority
+        try:
+            ticket_id = await SupportTicket.create_ticket(
+                user_id=user_id,
+                subject=subject,
+                description=description,
+                priority="medium"  # Default to medium priority
+            )
 
-        # Update the flag
+            if ticket_id:
+                await update.message.reply_text(
+                    f"Thank you for submitting your support ticket (ID: {ticket_id})!\n\n"
+                    f"Our team will review your ticket and respond as soon as possible. "
+                    f"You can check the status of your ticket with /ticketstatus."
+                )
+            else:
+                await update.message.reply_text(
+                    "There was an error creating your support ticket. Please try again later."
+                )
+        except Exception as e:
+            logger.error(f"Error creating ticket: {str(e)}")
+            await update.message.reply_text(
+                "There was an error creating your support ticket. Please try again later."
+            )
+
+        # Clear the stored data
+        context.user_data.pop("support_subject", None)
         context.user_data["expecting_support_description"] = False
         return True
 
     # If we're not expecting any specific input, return False to let other handlers process the message
     return False
-
-
-async def priority_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """
-    Handle priority selection for support tickets.
-
-    Args:
-        update (Update): The update object
-        context (ContextTypes.DEFAULT_TYPE): The context object
-    """
-    query = update.callback_query
-    await query.answer()
-
-    logger.info(f"Priority callback received: {query.data}")
-
-    user_id = update.effective_user.id
-    priority = query.data.replace("priority_", "")
-    logger.info(f"Processing priority: {priority} for user: {user_id}")
-
-    # Get the stored subject and description
-    subject = context.user_data.get("support_subject", "Support Request")
-    description = context.user_data.get(
-        "support_description", "No description provided")
-
-    logger.info(f"Subject: {subject}")
-    logger.info(f"Description: {description}")
-
-    # Create the support ticket
-    try:
-        ticket_id = await SupportTicket.create_ticket(
-            user_id=user_id,
-            subject=subject,
-            description=description,
-            priority=priority
-        )
-        logger.info(f"Created ticket with ID: {ticket_id}")
-    except Exception as e:
-        logger.error(f"Error creating ticket: {str(e)}")
-        ticket_id = None
-
-    if ticket_id:
-        await query.edit_message_text(
-            f"Thank you for submitting your support ticket (ID: {ticket_id})!\n\n"
-            f"Our team will review your ticket and respond as soon as possible. "
-            f"You can check the status of your ticket with /ticketstatus."
-        )
-    else:
-        await query.edit_message_text(
-            "There was an error creating your support ticket. Please try again later."
-        )
-
-    # Clear the stored data
-    context.user_data.pop("support_subject", None)
-    context.user_data.pop("support_description", None)
 
 
 # Register the handlers
@@ -396,6 +357,4 @@ def register_community_handlers(application):
     application.add_handler(CommandHandler(
         "communitystats", community_stats_command))
 
-    # Register callback query handlers
-    application.add_handler(CallbackQueryHandler(
-        priority_callback, pattern=r"^priority_"))
+    # No callback handlers needed
