@@ -52,6 +52,7 @@ See our [Getting Started Guide](docs/GETTING_STARTED.md) for detailed instructio
 - [Development Guide](docs/DEVELOPMENT_GUIDE.md) - Contributing to Jyra
 - [Architecture](docs/ARCHITECTURE.md) - System design and components
 - [Maintenance Guide](docs/MAINTENANCE.md) - Maintaining and optimizing Jyra
+- [Deployment Guide](docs/DEPLOYMENT.md) - Deploy Jyra for 24/7 availability
 - [Roadmap](docs/ROADMAP.md) - Future development plans
 - [Changelog](docs/CHANGELOG.md) - Version history and changes
 
