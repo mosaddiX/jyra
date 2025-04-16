@@ -2,6 +2,17 @@
 
 All notable changes to the Jyra AI Companion project will be documented in this file.
 
+## [0.7.1] - 2025-04-17
+
+### Changed
+- Simplified community engagement system for better reliability
+- Removed priority selection from support tickets to streamline the process
+- Improved error handling in community engagement features
+
+### Fixed
+- Fixed issues with callback handlers in community engagement system
+- Removed unused code and files to clean up the codebase
+
 ## [0.7.0] - 2025-04-16
 
 ### Added

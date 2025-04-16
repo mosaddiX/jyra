@@ -113,7 +113,7 @@
   - [x] Architecture overview
   - [x] API documentation
   - [x] Contribution guidelines
-- [ ] Create community engagement plan
-  - [ ] Feedback collection mechanism
-  - [ ] Feature request system
-  - [ ] User support channels
+- [x] Create community engagement plan
+  - [x] Feedback collection mechanism
+  - [x] Feature request system
+  - [x] User support channels
