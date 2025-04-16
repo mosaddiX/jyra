@@ -36,21 +36,31 @@ async def help_command_with_mood(update: Update, context: ContextTypes.DEFAULT_T
     """
     help_text = (
         "Here are the commands you can use:\n\n"
+        "🤖 *Core Commands*\n"
         "/start - Begin your journey with Jyra\n"
         "/help - Display this help message\n"
+        "/about - Learn more about Jyra\n\n"
+        "🎭 *Roleplay Commands*\n"
         "/role - Choose a roleplay persona for Jyra\n"
         "/switchrole - Change to a different roleplay persona\n"
-        "/createrole - Create your own custom persona\n"
+        "/createrole - Create your own custom persona\n\n"
+        "🧠 *Memory Commands*\n"
         "/remember - Tell Jyra something important to remember\n"
-        "/forget - Ask Jyra to forget a specific memory\n"
-        "/mood - Check your emotional trends based on conversations\n"
+        "/forget - Ask Jyra to forget a specific memory\n\n"
+        "🔧 *Settings Commands*\n"
         "/voice - Toggle voice responses on/off\n"
-        "/settings - Adjust your preferences for Jyra\n"
-        "/about - Learn more about Jyra\n\n"
+        "/settings - Adjust your preferences for Jyra\n\n"
+        "📊 *Analysis Commands*\n"
+        "/mood - Check your emotional trends based on conversations\n\n"
+        "🌐 *Community Commands*\n"
+        "/feedback - Share your feedback about Jyra\n"
+        "/feature - Suggest a new feature for Jyra\n"
+        "/support - Create a support ticket for help\n"
+        "/ticketstatus - Check the status of your support tickets\n\n"
         "You can also send me photos and voice messages!"
     )
 
-    await update.message.reply_text(help_text)
+    await update.message.reply_markdown(help_text)
 
 
 async def mood_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

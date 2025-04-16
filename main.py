@@ -17,6 +17,7 @@ from jyra.bot.handlers.command_handlers_sentiment import (
     switch_role_command, create_role_command, remember_command,
     forget_command, settings_command, mood_command
 )
+from jyra.bot.handlers.community_handlers import register_community_handlers
 from jyra.bot.middleware.rate_limit_middleware import rate_limit_middleware
 import asyncio
 import nest_asyncio
@@ -84,7 +85,7 @@ def main() -> None:
     """Start the bot."""
     # Display ASCII art
     print(f"{COLORS['BLUE']}{ASCII_ART}{COLORS['ENDC']}")
-    print(f"{COLORS['BOLD']}Jyra AI Companion v0.5.0{COLORS['ENDC']}")
+    print(f"{COLORS['BOLD']}Jyra AI Companion v0.6.1{COLORS['ENDC']}")
     print(f"{COLORS['GREEN']}Created by MosaddiX{COLORS['ENDC']}")
     print("\nInitializing...\n")
 
@@ -150,6 +151,11 @@ def main() -> None:
     # Add voice toggle command with rate limiting
     application.add_handler(CommandHandler(
         "voice", rate_limit_middleware(toggle_voice_responses)))
+
+    # Register community engagement handlers
+    print(
+        f"{COLORS['YELLOW']}  → Setting up community engagement features...{COLORS['ENDC']}")
+    register_community_handlers(application)
 
     # Add error handler
     print(f"{COLORS['YELLOW']}  → Setting up error handling...{COLORS['ENDC']}")
