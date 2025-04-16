@@ -85,7 +85,7 @@ def main() -> None:
     """Start the bot."""
     # Display ASCII art
     print(f"{COLORS['BLUE']}{ASCII_ART}{COLORS['ENDC']}")
-    print(f"{COLORS['BOLD']}Jyra AI Companion v0.6.1{COLORS['ENDC']}")
+    print(f"{COLORS['BOLD']}Jyra AI Companion v1.0.0{COLORS['ENDC']}")
     print(f"{COLORS['GREEN']}Created by MosaddiX{COLORS['ENDC']}")
     print("\nInitializing...\n")
 
