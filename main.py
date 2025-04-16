@@ -21,11 +21,8 @@ from jyra.bot.handlers.simple_community_handlers import register_community_handl
 from jyra.bot.middleware.rate_limit_middleware import rate_limit_middleware
 import asyncio
 import nest_asyncio
-import threading
-import os
 from pathlib import Path
 from dotenv import load_dotenv
-from server import run_flask
 
 from telegram.ext import (
     Application, CommandHandler, MessageHandler, CallbackQueryHandler,
@@ -163,13 +160,6 @@ def main() -> None:
     # Add error handler
     print(f"{COLORS['YELLOW']}  → Setting up error handling...{COLORS['ENDC']}")
     application.add_error_handler(error_handler)
-
-    # Start the Flask web server in a separate thread
-    flask_thread = threading.Thread(target=run_flask)
-    flask_thread.daemon = True
-    flask_thread.start()
-    print(
-        f"{COLORS['GREEN']}Web server started on port {os.environ.get('PORT', 8080)}{COLORS['ENDC']}")
 
     # Start the Bot
     print(

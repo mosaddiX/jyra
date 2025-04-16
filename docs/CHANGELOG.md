@@ -2,18 +2,6 @@
 
 All notable changes to the Jyra AI Companion project will be documented in this file.
 
-## [1.1.0] - 2025-04-17 (Deployment Release)
-
-### Added
-- Deployment configuration for Railway.app
-- Flask web server for keeping the application alive
-- Comprehensive deployment documentation
-- Procfile and runtime.txt for hosting platforms
-
-### Changed
-- Updated main.py to run both the bot and web server
-- Added Flask and Gunicorn to requirements.txt
-
 ## [1.0.0] - 2025-04-17 (Final Release)
 
 ### Added
