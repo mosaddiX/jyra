@@ -54,7 +54,7 @@ async def help_command_with_mood(update: Update, context: ContextTypes.DEFAULT_T
         "/mood - Check your emotional trends based on conversations\n\n"
         "🌐 *Community Commands*\n"
         "/feedback - Share your feedback about Jyra\n"
-        "/feature - Suggest a new feature for Jyra\n"
+        "/featurerequest - Suggest a new feature for Jyra\n"
         "/support - Create a support ticket for help\n"
         "/ticketstatus - Check the status of your support tickets\n\n"
         "You can also send me photos and voice messages!"
