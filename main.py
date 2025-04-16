@@ -17,6 +17,7 @@ from jyra.bot.handlers.command_handlers_sentiment import (
     switch_role_command, create_role_command, remember_command,
     forget_command, settings_command, mood_command
 )
+from jyra.bot.middleware.rate_limit_middleware import rate_limit_middleware
 import asyncio
 import nest_asyncio
 from pathlib import Path
@@ -107,35 +108,48 @@ def main() -> None:
     # Create application with default settings
     application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
 
-    # Add command handlers
+    # Add command handlers with rate limiting
     print(
         f"{COLORS['YELLOW']}  → Registering command handlers...{COLORS['ENDC']}")
-    application.add_handler(CommandHandler("start", start_command))
-    application.add_handler(CommandHandler("help", help_command))
-    application.add_handler(CommandHandler("about", about_command))
-    application.add_handler(CommandHandler("role", role_command))
-    application.add_handler(CommandHandler("switchrole", switch_role_command))
-    application.add_handler(CommandHandler("createrole", create_role_command))
-    application.add_handler(CommandHandler("remember", remember_command))
-    application.add_handler(CommandHandler("forget", forget_command))
-    application.add_handler(CommandHandler("settings", settings_command))
-    application.add_handler(CommandHandler("mood", mood_command))
+    application.add_handler(CommandHandler(
+        "start", rate_limit_middleware(start_command)))
+    application.add_handler(CommandHandler(
+        "help", rate_limit_middleware(help_command)))
+    application.add_handler(CommandHandler(
+        "about", rate_limit_middleware(about_command)))
+    application.add_handler(CommandHandler(
+        "role", rate_limit_middleware(role_command)))
+    application.add_handler(CommandHandler(
+        "switchrole", rate_limit_middleware(switch_role_command)))
+    application.add_handler(CommandHandler(
+        "createrole", rate_limit_middleware(create_role_command)))
+    application.add_handler(CommandHandler(
+        "remember", rate_limit_middleware(remember_command)))
+    application.add_handler(CommandHandler(
+        "forget", rate_limit_middleware(forget_command)))
+    application.add_handler(CommandHandler(
+        "settings", rate_limit_middleware(settings_command)))
+    application.add_handler(CommandHandler(
+        "mood", rate_limit_middleware(mood_command)))
 
     # Add callback query handler
     print(
         f"{COLORS['YELLOW']}  → Setting up interactive components...{COLORS['ENDC']}")
     application.add_handler(CallbackQueryHandler(handle_callback_query))
 
-    # Add message handlers
+    # Add message handlers with rate limiting
     print(
         f"{COLORS['YELLOW']}  → Configuring message processing...{COLORS['ENDC']}")
     application.add_handler(MessageHandler(
-        filters.TEXT & ~filters.COMMAND, handle_message))
-    application.add_handler(MessageHandler(filters.PHOTO, handle_photo))
-    application.add_handler(MessageHandler(filters.VOICE, handle_voice))
+        filters.TEXT & ~filters.COMMAND, rate_limit_middleware(handle_message)))
+    application.add_handler(MessageHandler(
+        filters.PHOTO, rate_limit_middleware(handle_photo)))
+    application.add_handler(MessageHandler(
+        filters.VOICE, rate_limit_middleware(handle_voice)))
 
-    # Add voice toggle command
-    application.add_handler(CommandHandler("voice", toggle_voice_responses))
+    # Add voice toggle command with rate limiting
+    application.add_handler(CommandHandler(
+        "voice", rate_limit_middleware(toggle_voice_responses)))
 
     # Add error handler
     print(f"{COLORS['YELLOW']}  → Setting up error handling...{COLORS['ENDC']}")

@@ -10,6 +10,11 @@ All notable changes to the Jyra AI Companion project will be documented in this 
 - Enhanced prompt engineering for more emotionally intelligent responses
 - Improved documentation to reflect new branding
 
+### Added
+- Implemented rate limiting to prevent abuse and ensure fair usage
+- Added comprehensive documentation including GETTING_STARTED.md and CONTRIBUTING.md
+- Created context middleware for better conversation handling
+
 ## [0.4.0] - 2025-04-16
 
 ### Added
