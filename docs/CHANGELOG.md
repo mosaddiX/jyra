@@ -6,6 +6,7 @@ All notable changes to the Jyra AI Companion project will be documented in this 
 
 ### Fixed
 - Fixed sentiment variable access bug in message handler
+- Fixed memory extractor by adding required role_context parameter
 - Cleaned up unused imports
 
 ## [0.6.0] - 2025-04-16
