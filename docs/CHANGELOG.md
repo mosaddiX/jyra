@@ -2,6 +2,17 @@
 
 All notable changes to the Jyra AI Companion project will be documented in this file.
 
+## [0.7.0] - 2025-04-16
+
+### Added
+- Comprehensive community engagement system
+- Feedback collection mechanism with rating system
+- Feature request system with voting capabilities
+- Support ticket system with priority levels
+- Community documentation and guidelines
+- GitHub issue templates for bug reports, feature requests, and feedback
+- Contributors recognition system
+
 ## [0.6.1] - 2025-04-16
 
 ### Fixed
