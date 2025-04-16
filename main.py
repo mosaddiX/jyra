@@ -17,7 +17,7 @@ from jyra.bot.handlers.command_handlers_sentiment import (
     switch_role_command, create_role_command, remember_command,
     forget_command, settings_command, mood_command
 )
-from jyra.bot.handlers.community_handlers import register_community_handlers
+from jyra.bot.handlers.simple_community_handlers import register_community_handlers
 from jyra.bot.middleware.rate_limit_middleware import rate_limit_middleware
 import asyncio
 import nest_asyncio

@@ -41,6 +41,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         await handle_settings_change(update, context)
         return
 
+    # Check if user is in community engagement process
+    try:
+        from jyra.bot.handlers.simple_community_handlers import handle_message as handle_community_message
+        handled = await handle_community_message(update, context)
+        if handled:
+            return
+    except Exception as e:
+        logger.error(f"Error handling community message: {str(e)}")
+
     # Get user from database
     db_user = await User.get_user(user_id)
     if not db_user:

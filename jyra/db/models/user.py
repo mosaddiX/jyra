@@ -36,6 +36,7 @@ class User:
         self.last_name = last_name
         self.language_code = language_code
         self.current_role_id = None
+        self.is_admin = False
         self.created_at = None
         self.last_interaction = None
 
@@ -56,7 +57,7 @@ class User:
 
             cursor.execute(
                 "SELECT user_id, username, first_name, last_name, language_code, "
-                "current_role_id, created_at, last_interaction FROM users WHERE user_id = ?",
+                "current_role_id, is_admin, created_at, last_interaction FROM users WHERE user_id = ?",
                 (user_id,)
             )
 
@@ -72,8 +73,9 @@ class User:
                     language_code=row[4]
                 )
                 user.current_role_id = row[5]
-                user.created_at = row[6]
-                user.last_interaction = row[7]
+                user.is_admin = bool(row[6])
+                user.created_at = row[7]
+                user.last_interaction = row[8]
                 return user
 
             return None

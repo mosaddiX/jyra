@@ -35,6 +35,7 @@ def init_db():
         last_name TEXT,
         language_code TEXT,
         current_role_id INTEGER,
+        is_admin BOOLEAN DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_interaction TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
