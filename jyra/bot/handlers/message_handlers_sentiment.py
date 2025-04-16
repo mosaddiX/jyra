@@ -11,10 +11,7 @@ from jyra.db.models.conversation import Conversation
 from jyra.db.models.memory import Memory
 from jyra.ai.models.gemini_direct import GeminiAI
 from jyra.ai.sentiment.sentiment_analyzer import SentimentAnalyzer
-from jyra.ai.multimodal.tts_processor import TTSProcessor
-from jyra.ai.prompts.prompt_templates import PromptTemplates
 from jyra.utils.logger import setup_logger
-from jyra.bot.handlers.multimodal_handlers import send_voice_response
 
 logger = setup_logger(__name__)
 
@@ -86,6 +83,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         role_id=db_user.current_role_id
     )
 
+    # Send typing action
+    await update.message.chat.send_action(action="typing")
+
+    # Analyze sentiment
+    sentiment = await sentiment_analyzer.analyze_sentiment(user_message)
+
     # Get user memories if enabled
     user_memories = None
     if preferences["memory_enabled"]:
@@ -120,12 +123,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         memory_summary = await Memory.get_memory_summary(user_id)
         if memory_summary:
             user_memories.insert(0, f"Summary: {memory_summary}")
-
-    # Send typing action
-    await update.message.chat.send_action(action="typing")
-
-    # Analyze sentiment
-    sentiment = await sentiment_analyzer.analyze_sentiment(user_message)
 
     # Store sentiment in user_data for future reference
     if "sentiment_history" not in context.user_data:
