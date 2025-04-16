@@ -332,21 +332,32 @@ async def priority_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     query = update.callback_query
     await query.answer()
 
+    logger.info(f"Priority callback received: {query.data}")
+
     user_id = update.effective_user.id
     priority = query.data.replace("priority_", "")
+    logger.info(f"Processing priority: {priority} for user: {user_id}")
 
     # Get the stored subject and description
     subject = context.user_data.get("support_subject", "Support Request")
     description = context.user_data.get(
         "support_description", "No description provided")
 
+    logger.info(f"Subject: {subject}")
+    logger.info(f"Description: {description}")
+
     # Create the support ticket
-    ticket_id = await SupportTicket.create_ticket(
-        user_id=user_id,
-        subject=subject,
-        description=description,
-        priority=priority
-    )
+    try:
+        ticket_id = await SupportTicket.create_ticket(
+            user_id=user_id,
+            subject=subject,
+            description=description,
+            priority=priority
+        )
+        logger.info(f"Created ticket with ID: {ticket_id}")
+    except Exception as e:
+        logger.error(f"Error creating ticket: {str(e)}")
+        ticket_id = None
 
     if ticket_id:
         await query.edit_message_text(
