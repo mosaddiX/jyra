@@ -648,7 +648,7 @@ def register_community_handlers(application):
         fallbacks=[CommandHandler(
             "cancel", lambda u, c: ConversationHandler.END)],
         name="feedback_conversation",
-        per_message=True
+        per_message=False
     )
     application.add_handler(feedback_conv_handler)
 
@@ -663,7 +663,7 @@ def register_community_handlers(application):
         fallbacks=[CommandHandler(
             "cancel", lambda u, c: ConversationHandler.END)],
         name="feature_conversation",
-        per_message=True
+        per_message=False
     )
     application.add_handler(feature_conv_handler)
 
@@ -682,7 +682,7 @@ def register_community_handlers(application):
         fallbacks=[CommandHandler(
             "cancel", lambda u, c: ConversationHandler.END)],
         name="support_conversation",
-        per_message=True
+        per_message=False
     )
     application.add_handler(support_conv_handler)
 
