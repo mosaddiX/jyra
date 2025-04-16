@@ -38,16 +38,31 @@ class MemoryExtractor:
 
         try:
             # Create a prompt for the AI to extract memories
-            prompt = self._create_memory_extraction_prompt(user_message, user_context)
-            
+            prompt = self._create_memory_extraction_prompt(
+                user_message, user_context)
+
             # Get response from AI
-            response = await self.ai.generate_response(prompt)
-            
+            # Create a simple role context for memory extraction
+            memory_role_context = {
+                "name": "Memory Extractor",
+                "personality": "Analytical and precise",
+                "speaking_style": "Concise and structured",
+                "knowledge_areas": "Personal information extraction, categorization",
+                "behaviors": "Identifies important information, categorizes effectively"
+            }
+
+            response = await self.ai.generate_response(
+                prompt=prompt,
+                role_context=memory_role_context,
+                temperature=0.3,  # Lower temperature for more consistent extraction
+                max_tokens=500    # Limit response length
+            )
+
             # Parse the response to extract memories
             memories = self._parse_memory_response(response)
-            
+
             return memories
-        
+
         except Exception as e:
             logger.error(f"Error extracting memories: {str(e)}")
             return []
@@ -72,7 +87,7 @@ class MemoryExtractor:
         prompt = f"""
 You are an AI assistant that extracts important information from user messages that should be remembered for future conversations.
 
-Extract facts, preferences, personal details, and other important information from the following message. 
+Extract facts, preferences, personal details, and other important information from the following message.
 Focus on information that would be useful to remember for future conversations.
 
 For each piece of information, provide:
@@ -111,25 +126,26 @@ Extracted memories (JSON format):
         try:
             # Clean up the response
             response = response.strip()
-            
+
             # If the response is empty or indicates no memories, return empty list
             if not response or response == "[]":
                 return []
-            
+
             # Try to extract JSON from the response
             import json
-            
+
             # Find the start and end of the JSON array
             start_idx = response.find("[")
             end_idx = response.rfind("]") + 1
-            
+
             if start_idx == -1 or end_idx == 0:
-                logger.warning(f"Could not find JSON array in response: {response}")
+                logger.warning(
+                    f"Could not find JSON array in response: {response}")
                 return []
-            
+
             json_str = response[start_idx:end_idx]
             memories = json.loads(json_str)
-            
+
             # Validate the memories
             valid_memories = []
             for memory in memories:
@@ -140,15 +156,15 @@ Extracted memories (JSON format):
                         importance = 1
                     elif importance > 5:
                         importance = 5
-                    
+
                     valid_memories.append({
                         "content": memory["content"],
                         "category": memory["category"],
                         "importance": importance
                     })
-            
+
             return valid_memories
-            
+
         except Exception as e:
             logger.error(f"Error parsing memory response: {str(e)}")
             return []
