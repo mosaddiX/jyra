@@ -2,6 +2,15 @@
 
 All notable changes to the Jyra AI Companion project will be documented in this file.
 
+## [0.6.0] - 2025-04-16
+
+### Added
+- Enhanced memory system with categories, importance levels, and context
+- Automatic memory extraction from user messages using AI
+- Memory summaries for long-term memory retention
+- Improved memory retrieval based on conversation context and sentiment
+- Increased conversation history limit from 10 to 50 messages
+
 ## [0.5.1] - 2025-04-16
 
 ### Fixed
