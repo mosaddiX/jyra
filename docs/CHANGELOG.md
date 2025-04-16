@@ -2,6 +2,11 @@
 
 All notable changes to the Jyra AI Companion project will be documented in this file.
 
+## [0.5.1] - 2025-04-16
+
+### Fixed
+- Added missing get_config function to fix rate limiting middleware
+
 ## [0.5.0] - 2025-04-16
 
 ### Changed
