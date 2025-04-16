@@ -89,8 +89,37 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     # Get user memories if enabled
     user_memories = None
     if preferences["memory_enabled"]:
-        memories = await Memory.get_memories(user_id, limit=5)
-        user_memories = [memory.content for memory in memories]
+        # Get important memories (importance >= 3)
+        important_memories = await Memory.get_memories(user_id, min_importance=3, limit=5)
+
+        # Get recent memories (any importance)
+        recent_memories = await Memory.get_memories(user_id, limit=10)
+
+        # Get category-specific memories based on sentiment
+        category = "general"
+        if sentiment and "primary_emotion" in sentiment:
+            if sentiment["primary_emotion"] in ["happy", "excited", "content"]:
+                category = "positive"
+            elif sentiment["primary_emotion"] in ["sad", "angry", "frustrated"]:
+                category = "emotional"
+            elif sentiment["primary_emotion"] in ["curious", "interested"]:
+                category = "interests"
+
+        category_memories = await Memory.get_memories(user_id, category=category, limit=3)
+
+        # Combine memories, removing duplicates
+        all_memories = {}
+        for memory in important_memories + recent_memories + category_memories:
+            if memory.memory_id not in all_memories:
+                all_memories[memory.memory_id] = memory
+
+        # Convert to list of memory contents
+        user_memories = [memory.content for memory in all_memories.values()]
+
+        # Get memory summary if available
+        memory_summary = await Memory.get_memory_summary(user_id)
+        if memory_summary:
+            user_memories.insert(0, f"Summary: {memory_summary}")
 
     # Send typing action
     await update.message.chat.send_action(action="typing")
@@ -149,6 +178,21 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             user_message=user_message,
             bot_response=ai_response
         )
+
+        # Extract memories from user message if memory is enabled
+        if preferences["memory_enabled"]:
+            # Create context for memory extraction
+            user_context = {
+                "name": update.effective_user.first_name,
+                "current_role": role.name,
+                "sentiment": sentiment["primary_emotion"] if sentiment else "neutral"
+            }
+
+            # Extract memories asynchronously (don't wait for completion)
+            context.application.create_task(
+                Memory.extract_memories_from_message(
+                    user_id, user_message, user_context)
+            )
 
         # Send response
         await update.message.reply_text(ai_response)

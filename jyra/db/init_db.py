@@ -70,14 +70,30 @@ def init_db():
     )
     ''')
 
-    # Create memories table
+    # Create memories table with enhanced features
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS memories (
         memory_id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
         content TEXT,
+        category TEXT DEFAULT 'general',
         importance INTEGER DEFAULT 1,
+        source TEXT DEFAULT 'explicit',
+        context TEXT,
+        last_accessed TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users (user_id)
+    )
+    ''')
+
+    # Create memory_summaries table for long-term memory
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS memory_summaries (
+        summary_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        summary TEXT,
+        category TEXT,
+        last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (user_id)
     )
     ''')
@@ -126,6 +142,23 @@ def init_db():
 
     cursor.execute('''
     CREATE INDEX IF NOT EXISTS idx_memories_created_at ON memories (created_at)
+    ''')
+
+    cursor.execute('''
+    CREATE INDEX IF NOT EXISTS idx_memories_category ON memories (category)
+    ''')
+
+    cursor.execute('''
+    CREATE INDEX IF NOT EXISTS idx_memories_source ON memories (source)
+    ''')
+
+    # Indexes for memory_summaries table
+    cursor.execute('''
+    CREATE INDEX IF NOT EXISTS idx_memory_summaries_user_id ON memory_summaries (user_id)
+    ''')
+
+    cursor.execute('''
+    CREATE INDEX IF NOT EXISTS idx_memory_summaries_category ON memory_summaries (category)
     ''')
 
     # Indexes for roles table
