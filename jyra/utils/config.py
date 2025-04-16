@@ -28,6 +28,20 @@ ADMIN_USER_IDS: List[int] = [
 ]
 
 
+def get_config(key: str, default: str = "") -> str:
+    """
+    Get a configuration value from environment variables.
+
+    Args:
+        key (str): The configuration key to get
+        default (str, optional): Default value if the key is not found
+
+    Returns:
+        str: The configuration value or default if not found
+    """
+    return os.getenv(key, default)
+
+
 def validate_config() -> List[str]:
     """
     Validate the configuration and return a list of missing or invalid settings.
