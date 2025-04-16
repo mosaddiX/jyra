@@ -2,6 +2,12 @@
 
 All notable changes to the Jyra AI Companion project will be documented in this file.
 
+## [0.6.1] - 2025-04-16
+
+### Fixed
+- Fixed sentiment variable access bug in message handler
+- Cleaned up unused imports
+
 ## [0.6.0] - 2025-04-16
 
 ### Added
