@@ -26,17 +26,13 @@ class ImageProcessor:
         Initialize the image processor.
         """
         self.api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
-        logger.info("Initialized image processor")
+        logger.info("Initialized processor")
 
-    async def process_image(self, image_path: str, prompt: Optional[str] = None) -> str:
+    async def process(self, prompt: Optional[str] = None) -> str:
         """
-        Process an image and generate a description or response to a prompt.
+        Process a prompt.
 
         Args:
-            image_path (str): Path to the image file
-            prompt (Optional[str]): Optional prompt to guide the image analysis
-
-        Returns:
             str: Description or response based on the image
         """
         try:

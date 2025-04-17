@@ -4,10 +4,9 @@ Sentiment analysis module for Jyra
 
 import re
 from typing import Dict, Any, Tuple, List, Optional
-import aiohttp
 import json
 
-from jyra.utils.config import GEMINI_API_KEY
+from jyra.ai.models.model_manager import model_manager
 from jyra.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
@@ -29,8 +28,7 @@ class SentimentAnalyzer:
             "confusion", "anxiety", "gratitude", "disappointment"
         ]
 
-        # API endpoint for Gemini
-        self.api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+        # We'll use the model_manager instead of direct API calls
 
         logger.info("Initialized sentiment analyzer")
 
@@ -61,7 +59,7 @@ class SentimentAnalyzer:
 
     async def _analyze_with_gemini(self, text: str) -> Dict[str, Any]:
         """
-        Use Gemini to analyze sentiment.
+        Use AI models to analyze sentiment.
 
         Args:
             text (str): The text to analyze
@@ -91,71 +89,67 @@ class SentimentAnalyzer:
         }}
         """
 
-        # Prepare the API request
-        payload = {
-            "contents": [
-                {
-                    "role": "user",
-                    "parts": [{"text": prompt}]
-                }
-            ],
-            "generationConfig": {
-                "temperature": 0.1,
-                "maxOutputTokens": 200,
-                "topP": 0.95,
-                "topK": 40
-            }
+        # Create a role context for sentiment analysis
+        sentiment_role_context = {
+            "name": "Sentiment Analyzer",
+            "personality": "Analytical and perceptive",
+            "speaking_style": "Precise and structured",
+            "knowledge_areas": "Emotional intelligence, psychology, language patterns",
+            "behaviors": "Analyzes emotions accurately, provides structured responses"
         }
 
-        # Make the API request
-        async with aiohttp.ClientSession() as session:
-            async with session.post(self.api_url, json=payload) as response:
-                if response.status == 200:
-                    result = await response.json()
+        try:
+            # Use model_manager with fallback capability
+            response_tuple = await model_manager.generate_response(
+                prompt=prompt,
+                role_context=sentiment_role_context,
+                temperature=0.1,  # Low temperature for consistent results
+                max_tokens=200,    # Short response
+                top_p=0.95,
+                top_k=40,
+                use_fallbacks=True
+            )
 
-                    # Extract the response text
-                    if "candidates" in result and len(result["candidates"]) > 0:
-                        candidate = result["candidates"][0]
-                        if "content" in candidate and "parts" in candidate["content"]:
-                            parts = candidate["content"]["parts"]
-                            if len(parts) > 0 and "text" in parts[0]:
-                                response_text = parts[0]["text"]
+            # Extract response and model used
+            response_text, model_used = response_tuple
+            logger.info(f"Sentiment analysis using model: {model_used}")
 
-                                # Extract JSON from the response
-                                try:
-                                    # Find JSON in the response
-                                    json_match = re.search(
-                                        r'\{.*\}', response_text, re.DOTALL)
-                                    if json_match:
-                                        json_str = json_match.group(0)
-                                        sentiment_data = json.loads(json_str)
+            # Extract JSON from the response
+            try:
+                # Find JSON in the response
+                json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+                if json_match:
+                    json_str = json_match.group(0)
+                    sentiment_data = json.loads(json_str)
 
-                                        # Validate and normalize the response
-                                        primary_emotion = sentiment_data.get(
-                                            "primary_emotion", "neutral").lower()
-                                        intensity = int(
-                                            sentiment_data.get("intensity", 3))
-                                        explanation = sentiment_data.get(
-                                            "explanation", "")
+                    # Validate and normalize the response
+                    primary_emotion = sentiment_data.get(
+                        "primary_emotion", "neutral").lower()
+                    intensity = int(
+                        sentiment_data.get("intensity", 3))
+                    explanation = sentiment_data.get(
+                        "explanation", "")
 
-                                        # Ensure intensity is in range 1-5
-                                        intensity = max(1, min(5, intensity))
+                    # Ensure intensity is in range 1-5
+                    intensity = max(1, min(5, intensity))
 
-                                        return {
-                                            "primary_emotion": primary_emotion,
-                                            "intensity": intensity,
-                                            "explanation": explanation
-                                        }
-                                except Exception as e:
-                                    logger.error(
-                                        f"Error parsing sentiment JSON: {str(e)}")
+                    return {
+                        "primary_emotion": primary_emotion,
+                        "intensity": intensity,
+                        "explanation": explanation
+                    }
+            except Exception as e:
+                logger.error(f"Error parsing sentiment JSON: {str(e)}")
 
-                # Return neutral sentiment as fallback
-                return {
-                    "primary_emotion": "neutral",
-                    "intensity": 3,
-                    "explanation": "Could not determine sentiment"
-                }
+        except Exception as e:
+            logger.error(f"Error in sentiment analysis: {str(e)}")
+
+        # Return neutral sentiment as fallback
+        return {
+            "primary_emotion": "neutral",
+            "intensity": 3,
+            "explanation": "Could not determine sentiment"
+        }
 
     def get_response_adjustment(self, sentiment: Dict[str, Any]) -> Dict[str, Any]:
         """

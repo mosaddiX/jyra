@@ -8,6 +8,8 @@ from pathlib import Path
 
 from jyra.utils.config import DATABASE_PATH
 from jyra.utils.logger import setup_logger
+from jyra.db.migrations.enhance_memory_system import migrate_memory_system
+from jyra.db.migrations.enhance_roles import migrate_roles_table
 
 logger = setup_logger(__name__)
 
@@ -181,6 +183,12 @@ def init_db():
     conn.close()
 
     logger.info("Database initialization complete")
+
+    # Run migrations
+    logger.info("Running database migrations...")
+    migrate_memory_system()
+    migrate_roles_table()
+    logger.info("Database migrations complete")
 
 
 if __name__ == "__main__":

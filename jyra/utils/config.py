@@ -18,6 +18,9 @@ LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
 
 # AI configuration
 GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+ENABLE_OPENAI: bool = os.getenv(
+    "ENABLE_OPENAI", "false").lower() in ("true", "1", "yes")
 
 # Database configuration
 DATABASE_PATH: str = os.getenv("DATABASE_PATH", "data/jyra.db")
@@ -56,6 +59,9 @@ def validate_config() -> List[str]:
 
     if not GEMINI_API_KEY:
         errors.append("GEMINI_API_KEY is not set")
+
+    if ENABLE_OPENAI and not OPENAI_API_KEY:
+        errors.append("OPENAI_API_KEY is not set but ENABLE_OPENAI is true")
 
     if not DATABASE_PATH:
         errors.append("DATABASE_PATH is not set")

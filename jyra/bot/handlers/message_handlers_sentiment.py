@@ -31,6 +31,45 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     user_id = update.effective_user.id
     user_message = update.message.text
 
+    # MEMORY ADD MODE
+    if context.user_data.get("memory_add_mode", False):
+        memory_content = update.message.text
+        user_id = update.effective_user.id
+        from jyra.db.models.memory import Memory
+        success = await Memory.add_memory(user_id, memory_content)
+        context.user_data["memory_add_mode"] = False
+        if success:
+            await update.message.reply_text(
+                f"I've remembered: \"{memory_content}\"",
+                reply_markup=create_main_menu_keyboard()
+            )
+        else:
+            await update.message.reply_text(
+                "Sorry, I couldn't remember that. Please try again later.",
+                reply_markup=create_main_menu_keyboard()
+            )
+        return
+
+    # MEMORY SEARCH MODE
+    if context.user_data.get("memory_search_mode", False):
+        query = update.message.text
+        user_id = update.effective_user.id
+        from jyra.db.models.memory import Memory
+        memories = await Memory.search_memories(user_id, query)
+        context.user_data["memory_search_mode"] = False
+        if memories:
+            results = "\n\n".join([f"• {m.content}" for m in memories])
+            await update.message.reply_text(
+                f"Here are your matching memories:\n\n{results}",
+                reply_markup=create_memory_keyboard()
+            )
+        else:
+            await update.message.reply_text(
+                "No memories matched your search.",
+                reply_markup=create_memory_keyboard()
+            )
+        return
+
     # Check if user is in role creation process
     if context.user_data.get("creating_role", False):
         await handle_role_creation(update, context)

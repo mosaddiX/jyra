@@ -100,16 +100,17 @@ async def mood_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
     # Create a text summary
     summary = (
-        f"📊 *Your Emotional Trends*\n\n"
+        f"Your Emotional Trends\n\n"
         f"Current mood: {current_sentiment['primary_emotion']} (intensity: {current_sentiment['intensity']}/5)\n"
         f"Most frequent emotion: {most_common_emotion}\n"
         f"Average emotional intensity: {avg_intensity:.1f}/5\n\n"
     )
 
     if current_sentiment["explanation"]:
-        summary += f"*Current mood analysis*: {current_sentiment['explanation']}\n\n"
+        summary += f"Current mood analysis: {current_sentiment['explanation']}\n\n"
 
     # Add emotion distribution
+    summary += "Recent emotion distribution:\n"
     summary += "*Recent emotion distribution*:\n"
     for emotion, count in emotion_counts.most_common():
         percentage = (count / len(sentiment_history)) * 100

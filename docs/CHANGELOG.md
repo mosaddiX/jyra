@@ -2,6 +2,23 @@
 
 All notable changes to the Jyra AI Companion project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- **Database Initialization**: Added scripts and logic to create all required tables (`roles`, `users`, `memories`) automatically.
+- **Role Model Enhancements**: Added `is_featured` and `is_popular` fields to the `roles` table and model for advanced UI filtering.
+- **Featured/Popular Roles UI**: Role selection menu now supports "🌟 Featured" and "🔥 Popular" sections with filter buttons and emoji indicators.
+- **Automatic Featured Refresh**: Featured roles are now randomly refreshed daily, triggered on the first role menu access each day (no manual scripts required).
+- **Robust Migration Handling**: Migration scripts safely handle missing or duplicate columns.
+
+### Changed
+- **Role Selection UI**: Improved with visual indicators, filter buttons, and clear navigation for a more user-friendly experience.
+- **Bot Initialization**: Ensured default roles are initialized on first use if the roles table is empty.
+
+### Removed
+- Removed standalone script for featuring roles; all logic is now handled internally and automatically by the bot.
+
+
 ## [1.0.0] - 2025-04-17 (Final Release)
 
 ### Added

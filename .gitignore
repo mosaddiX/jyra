@@ -28,7 +28,18 @@ venv/
 ENV/
 
 # Database
-data/
+data/cache/
+data/visualizations/
+data/web/
+*.db
+*.sqlite
+*.sqlite3
+
+# Keep data directory structure
+!data/.gitkeep
+!data/cache/.gitkeep
+!data/visualizations/.gitkeep
+!data/web/.gitkeep
 
 # Logs
 logs/
@@ -43,3 +54,10 @@ logs/
 # OS specific files
 .DS_Store
 Thumbs.db
+
+# Test and coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/

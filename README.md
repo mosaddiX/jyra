@@ -7,7 +7,9 @@ Jyra isn't just a bot. She's an emotionally aware companion who learns, grows, a
 ## ✨ Features
 
 - **Multiple Personas**: Choose from a variety of pre-defined roles or create your own
-- **Contextual Memory**: Jyra remembers your conversations and important details
+- **Advanced Memory System**: Jyra remembers your conversations with importance-based prioritization
+- **Memory Visualization**: View your memory network with interactive visualizations and dashboards
+- **Semantic Search**: Find relevant memories using natural language queries
 - **Emotional Intelligence**: Detects and responds to the emotional tone of your messages
 - **Natural Conversations**: Powered by advanced AI models for human-like interactions
 - **Customization**: Tailor Jyra's behavior to your preferences
@@ -32,15 +34,20 @@ See our [Getting Started Guide](docs/GETTING_STARTED.md) for detailed instructio
    ```
 
 3. Set up environment variables in a `.env` file
+   ```
+   TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+   GEMINI_API_KEY=your_gemini_api_key
+   ADMIN_USER_IDS=your_telegram_user_id
+   ```
 
 4. Initialize the database
    ```bash
-   python -m jyra.db.init_db
+   python -m jyra.cli db-init
    ```
 
 5. Run the bot
    ```bash
-   python main.py
+   python main.py bot
    ```
 
 6. Start chatting with your bot on Telegram!
@@ -58,8 +65,11 @@ See our [Getting Started Guide](docs/GETTING_STARTED.md) for detailed instructio
 ## 🛠️ Technology Stack
 
 - **Bot Framework**: python-telegram-bot
-- **AI Integration**: Google Gemini API
-- **Database**: SQLite
+- **AI Integration**: Google Gemini API with support for OpenAI
+- **Database**: SQLite with connection pooling
+- **Memory System**: Vector embeddings with semantic search
+- **Visualization**: Matplotlib, NetworkX for memory visualizations
+- **Web Dashboard**: HTML/CSS for memory analytics
 - **Language**: Python 3.8+
 
 ## 🤝 Contributing
@@ -74,6 +84,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) for the Telegram API wrapper
 - [Google Gemini](https://ai.google.dev/) for the AI capabilities
+- [OpenAI](https://openai.com/) for alternative AI capabilities
+- [Matplotlib](https://matplotlib.org/) and [NetworkX](https://networkx.org/) for visualization tools
 - All contributors who have helped shape this project
 
 ---

@@ -102,11 +102,9 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
         # Convert role to dictionary for the AI
         role_data = role.to_dict()
-
         # Add sentiment-based guidance to role context
         if "tone_guidance" in adjustments and adjustments["tone_guidance"]:
             role_data["tone_guidance"] = adjustments["tone_guidance"]
-
         # Generate a more personalized response based on the image analysis
         ai_response = await gemini_ai.generate_response(
             prompt=f"I sent you an image and you described it as: {response}. Please respond in character.",

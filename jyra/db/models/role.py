@@ -21,7 +21,8 @@ class Role:
     def __init__(self, role_id: Optional[int] = None, name: str = "", description: str = "",
                  personality: str = "", speaking_style: str = "",
                  knowledge_areas: str = "", behaviors: str = "",
-                 is_custom: bool = False, created_by: Optional[int] = None):
+                 is_custom: bool = False, created_by: Optional[int] = None,
+                 is_featured: bool = False, is_popular: bool = False):
         """
         Initialize a Role object.
 
@@ -45,6 +46,8 @@ class Role:
         self.behaviors = behaviors
         self.is_custom = is_custom
         self.created_by = created_by
+        self.is_featured = is_featured
+        self.is_popular = is_popular
 
     @classmethod
     async def initialize_default_roles(cls) -> bool:
@@ -71,14 +74,16 @@ class Role:
             for role_key, role_data in DEFAULT_ROLES.items():
                 cursor.execute(
                     "INSERT INTO roles (name, description, personality, speaking_style, "
-                    "knowledge_areas, behaviors, is_custom) VALUES (?, ?, ?, ?, ?, ?, 0)",
+                    "knowledge_areas, behaviors, is_custom, is_featured, is_popular) VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)",
                     (
                         role_data["name"],
                         role_data["description"],
                         role_data["personality"],
                         role_data["speaking_style"],
                         role_data["knowledge_areas"],
-                        role_data["behaviors"]
+                        role_data["behaviors"],
+                        int(role_data.get("is_featured", 0)),
+                        int(role_data.get("is_popular", 0))
                     )
                 )
 
@@ -109,7 +114,7 @@ class Role:
 
             cursor.execute(
                 "SELECT role_id, name, description, personality, speaking_style, "
-                "knowledge_areas, behaviors, is_custom, created_by "
+                "knowledge_areas, behaviors, is_custom, created_by, is_featured, is_popular "
                 "FROM roles WHERE role_id = ?",
                 (role_id,)
             )
@@ -127,7 +132,9 @@ class Role:
                     knowledge_areas=row[5],
                     behaviors=row[6],
                     is_custom=bool(row[7]),
-                    created_by=row[8]
+                    created_by=row[8],
+                    is_featured=bool(row[9]),
+                    is_popular=bool(row[10])
                 )
 
             return None
@@ -154,7 +161,7 @@ class Role:
             cursor = conn.cursor()
 
             query = "SELECT role_id, name, description, personality, speaking_style, " \
-                    "knowledge_areas, behaviors, is_custom, created_by FROM roles"
+                    "knowledge_areas, behaviors, is_custom, created_by, is_featured, is_popular FROM roles"
 
             params = []
             conditions = []
@@ -186,7 +193,9 @@ class Role:
                     knowledge_areas=row[5],
                     behaviors=row[6],
                     is_custom=bool(row[7]),
-                    created_by=row[8]
+                    created_by=row[8],
+                    is_featured=bool(row[9]) if len(row) > 9 else False,
+                    is_popular=bool(row[10]) if len(row) > 10 else False
                 )
                 for row in rows
             ]
@@ -332,5 +341,7 @@ class Role:
             "knowledge_areas": self.knowledge_areas,
             "behaviors": self.behaviors,
             "is_custom": self.is_custom,
-            "created_by": self.created_by
+            "created_by": self.created_by,
+            "is_featured": self.is_featured,
+            "is_popular": self.is_popular
         }

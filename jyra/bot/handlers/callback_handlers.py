@@ -8,6 +8,9 @@ from telegram.ext import ContextTypes
 from jyra.db.models.user import User
 from jyra.db.models.role import Role
 from jyra.db.models.memory import Memory
+from jyra.bot.commands.visualization_commands import handle_visualization_callback
+from jyra.bot.commands.consolidation_commands import handle_consolidation_callback
+from jyra.bot.commands.decay_commands import handle_decay_callback
 from jyra.utils.logger import setup_logger
 
 logger = setup_logger(__name__)
@@ -51,6 +54,18 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
     elif callback_data.startswith("settings_"):
         setting = callback_data.split("_")[1]
         await handle_settings_selection(update, context, setting)
+
+    # Handle visualization options
+    elif callback_data.startswith("viz_"):
+        await handle_visualization_callback(update, context)
+
+    # Handle consolidation options
+    elif callback_data.startswith("view_consolidated_") or callback_data.startswith("consolidation_details_"):
+        await handle_consolidation_callback(update, context)
+
+    # Handle decay options
+    elif callback_data.startswith("view_decayed_"):
+        await handle_decay_callback(update, context)
 
 
 async def handle_role_selection(update: Update, context: ContextTypes.DEFAULT_TYPE, role_id: int) -> None:
